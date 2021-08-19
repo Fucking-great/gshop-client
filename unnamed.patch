@@ -1,0 +1,224 @@
+Index: config/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- config/index.js	(revision 6cfb787596e17c15f54448aecba026144a7eb677)
++++ config/index.js	(date 1627298554091)
+@@ -10,7 +10,15 @@
+     // Paths
+     assetsSubDirectory: 'static',
+     assetsPublicPath: '/',
+-    proxyTable: {},
++    proxyTable: {
++      '/api': { // 匹配所有以‘/api’ 开头的请求路径
++        target:'http://localhost:4000', //代理目标的基础路径
++        changeOrigin: true, //支持跨域
++        pathRewrite: { // 重写路径： 去掉路径中开头的‘/api’
++          '^/api': ''
++        }
++      }
++    },
+ 
+     // Various Dev Server settings
+     host: 'localhost', // can be overwritten by process.env.HOST
+Index: src/api/ajax.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/api/ajax.js	(revision 6cfb787596e17c15f54448aecba026144a7eb677)
++++ src/api/ajax.js	(date 1627298721177)
+@@ -18,7 +18,7 @@
+         url = url + '?' + dataStr
+       }
+     // 发送get请求
+-      promise = axixs.get(url)
++      promise = axios.get(url)
+     } else {
+       // 发送post请求
+       promise = axios.post(url,data)
+Index: src/store/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/store/index.js	(date 1627300255526)
++++ src/store/index.js	(date 1627300255526)
+@@ -0,0 +1,18 @@
++/*
++* vuex最核心的管理对象store
++* */
++import Vue from 'vue'
++import Vuex from 'vuex'
++import state from './state'
++import mutations from './mutations'
++import actions from './actions';
++import getters from './getters';
++
++
++Vue.use(Vuex)
++export default new Vuex.Store({
++  state,
++  mutations,
++  actions,
++  getters
++})
+Index: src/api/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/api/index.js	(revision 6cfb787596e17c15f54448aecba026144a7eb677)
++++ src/api/index.js	(date 1627300664653)
+@@ -2,12 +2,14 @@
+ * 包含n接口请求函数的模块
+ * */
+ import ajax from "./ajax";
++// const BASE_URL = 'http://localhost:4000'
++const BASE_URL = '/api'
+ // 1、根据经纬度获取位置详情
+-export const reqAddress = (geohash) => ajax('/position/${geohash}')
++export const reqAddress = (geohash) => ajax(`${BASE_URL}/position/${geohash}`)
+ // 2、获取食品分类列表
+-export const reqFoodType = () => ajax('/index_category')
++export const reqFoodCategorys = () => ajax(BASE_URL + '/index_category')
+ // 3、根据经纬度获取商铺列表
+-export const reqShopList = (longitude,latitude) => ajax('/shops',{longitude,latitude})
++export const reqShopList = (longitude,latitude) => ajax(`/shops`,{longitude,latitude})
+ // 4、根据经纬度和关键字搜索商铺列表
+ // export const reqFoodType = (geohash,keyword) => ajax('search_shops',{geohash,keyword})
+ // 5、获取一次性验证码
+Index: src/store/state.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/store/state.js	(date 1627300729036)
++++ src/store/state.js	(date 1627300729036)
+@@ -0,0 +1,10 @@
++/*
++* 状态对象
++* */
++export default{
++  latitude: 25.09514, // 纬度
++  longitude: 104.9005, // 经度
++  address: {}, // 地址相关信息对象
++  categorys: [], // 食品分类数组
++  shops: [] // 商家的数组
++}
+Index: src/store/mutations.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/store/mutations.js	(date 1627299671126)
++++ src/store/mutations.js	(date 1627299671126)
+@@ -0,0 +1,6 @@
++/*
++* 直接更新state的多个方法对象
++* */
++export default{
++
++}
+Index: src/store/actions.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/store/actions.js	(date 1627299729222)
++++ src/store/actions.js	(date 1627299729222)
+@@ -0,0 +1,6 @@
++/*
++* 通过mutations间接更新state的多个方法对象
++* */
++export default{
++
++}
+Index: src/store/getters.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/store/getters.js	(date 1627299816286)
++++ src/store/getters.js	(date 1627299816286)
+@@ -0,0 +1,6 @@
++/*
++* 包含多个基于state的getter计算属性的对象
++* */
++export default{
++
++}
+Index: src/store/mutation-types.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/store/mutation-types.js	(date 1627300977418)
++++ src/store/mutation-types.js	(date 1627300977418)
+@@ -0,0 +1,7 @@
++/*
++* 包含n个mutation的type名称常量
++* */
++
++export const RECEIVE_ADDRESS = 'receive_address' // 接受地址
++export const RECEIVE_CATEGORYS = 'RECEIVE_CATEGORYS' // 接受地址
++export const RECEIVE_ADDRESS = 'receive_address' // 接受地址
+Index: package.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- package.json	(revision 6cfb787596e17c15f54448aecba026144a7eb677)
++++ package.json	(date 1627299311746)
+@@ -14,7 +14,8 @@
+     "stylus-loader": "^3.0.2",
+     "swiper": "^6.8.0",
+     "vue": "^2.5.2",
+-    "vue-router": "^3.0.1"
++    "vue-router": "^3.0.1",
++    "vuex": "^3.6.2"
+   },
+   "devDependencies": {
+     "autoprefixer": "^7.1.2",
+Index: src/App.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/App.vue	(revision 6cfb787596e17c15f54448aecba026144a7eb677)
++++ src/App.vue	(date 1627299200535)
+@@ -7,8 +7,14 @@
+ 
+ <script>
+   import FooterGuide from './components/FooterGuide/FooterGuide.vue'
++  import {reqFoodType} from  './api';
++
+ export default {
+   name: 'App',
++  async mounted () {
++    const result = await reqFoodType()
++    console.log(result)
++  },
+   components: {
+     FooterGuide
+   }
+Index: package-lock.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- package-lock.json	(revision 6cfb787596e17c15f54448aecba026144a7eb677)
++++ package-lock.json	(date 1627299311920)
+@@ -10792,6 +10792,11 @@
+       "integrity": "sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==",
+       "dev": true
+     },
++    "vuex": {
++      "version": "3.6.2",
++      "resolved": "https://repo.huaweicloud.com/repository/npm/vuex/-/vuex-3.6.2.tgz",
++      "integrity": "sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw=="
++    },
+     "watchpack": {
+       "version": "1.7.5",
+       "resolved": "https://repo.huaweicloud.com/repository/npm/watchpack/-/watchpack-1.7.5.tgz",
