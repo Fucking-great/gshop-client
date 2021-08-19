@@ -32,7 +32,7 @@ npm run build --report
         例如：
 
         git remote set-url origin https://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@github.com/shliang0603/Yolov4_DeepSocial.git/
-        git remote set-url origin https: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/1061879085@qq.com/171208_gshop/
+        git remote set-url origin https://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/1061879085@qq.com/171208_gshop/
 
 ```
 
