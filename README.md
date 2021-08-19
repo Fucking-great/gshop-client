@@ -24,6 +24,16 @@ npm run build --report
 创建远程仓库
     copy 关联代码
     git push origin master
+        git remote set-url origin https://<your_token>@github.com/<USERNAME>/<REPO>.git
+
+        <your_token>：换成你自己得到的token
+        <USERNAME>：是你自己github的用户名
+        <REPO>：是你的仓库名称
+        例如：
+
+        git remote set-url origin https://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@github.com/shliang0603/Yolov4_DeepSocial.git/
+        git remote set-url origin https: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/1061879085@qq.com/171208_gshop/
+
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
